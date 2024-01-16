@@ -137,6 +137,26 @@ fn input_to_input_works() {
 }
 
 #[test]
+fn input_to_input_and_input_to_user_combined_works() {
+    let eq_input_to_input = OpCode::COMP(Comparator::new(OpComp::EQ).load(OpLoad::INPUT_VS_INPUT));
+    let result = interpreter::interpret(
+        &[
+            PactType::Numeric(Numeric(123)),
+            PactType::Numeric(Numeric(456)),
+        ],
+        &[PactType::Numeric(Numeric(456))],
+        &[
+            eq_input_to_input.into(),
+            0x00,
+            // INPUT(1) == USER(1)
+            OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
+            0x10,
+        ],
+    );
+    assert_eq!(result, Ok(true));
+}
+
+#[test]
 fn it_fails_with_bad_type_operation_on_stringlike() {
     let bad_op_codes = vec![
         OpCode::COMP(Comparator::new(OpComp::GTE)).into(),
