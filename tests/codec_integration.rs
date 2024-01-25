@@ -26,7 +26,7 @@ fn contract_binary_format_codec() {
         data_table: DataTable::new(vec![
             PactType::Numeric(Numeric(111)),
             PactType::Numeric(Numeric(333)),
-            PactType::StringLike(StringLike(b"testing")),
+            PactType::StringLike(StringLike(b"testing".to_vec())),
         ]),
         bytecode: [
             // EQ LD_INPUT(0) LD_USER(0)
@@ -54,7 +54,7 @@ fn contract_binary_format_codec() {
     let mut buf: Vec<u8> = Vec::new();
     expected.encode(&mut buf);
 
-    let result = Contract::decode(&buf).expect("it decodes");
+    let result = Contract::decode(buf).expect("it decodes");
 
     assert_eq!(result, expected);
 }
@@ -63,19 +63,19 @@ fn contract_binary_format_codec() {
 fn contract_binary_format_malformed_data_table() {
     let mut malformed_short: Vec<u8> = vec![0, 1];
     assert_eq!(
-        Contract::decode(&mut malformed_short),
+        Contract::decode(malformed_short),
         Err(BinaryFormatErr::MalformedDataTable("missing type ID byte"))
     );
 
     let mut bad_type_id = vec![0, 0b1000_0000, 0b0000_0001, 0b0000_0000];
     assert_eq!(
-        Contract::decode(&mut bad_type_id),
+        Contract::decode(bad_type_id),
         Err(BinaryFormatErr::MalformedDataTable("unsupported type ID"))
     );
 
     let mut numeric_too_small = vec![0, 0b1000_0000, 0b1000_0000, 0b0100_0000, 0, 0];
     assert_eq!(
-        Contract::decode(&mut numeric_too_small),
+        Contract::decode(numeric_too_small),
         Err(BinaryFormatErr::MalformedDataTable(
             "implementation only supports 64-bit numerics"
         ))

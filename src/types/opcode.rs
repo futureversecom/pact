@@ -94,6 +94,16 @@ pub enum OpLoad {
     INPUT_VS_INPUT,
 }
 
+impl From<u8> for OpLoad {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::INPUT_VS_USER,
+            1 => Self::INPUT_VS_INPUT,
+            _ => Self::INPUT_VS_USER,
+        }
+    }
+}
+
 /// Enum of avaliable comparator OpCode operations
 #[allow(non_camel_case_types)]
 #[cfg_attr(feature = "std", derive(Debug))]
@@ -105,6 +115,18 @@ pub enum OpComp {
     IN,
 }
 
+impl From<u8> for OpComp {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::EQ,
+            1 => Self::GT,
+            2 => Self::GTE,
+            3 => Self::IN,
+            _ => Self::EQ,
+        }
+    }
+}
+
 /// Enum of avaliable conjunction OpCode operations
 #[allow(non_camel_case_types)]
 #[cfg_attr(feature = "std", derive(Debug))]
@@ -113,6 +135,17 @@ pub enum OpConj {
     AND,
     OR,
     XOR,
+}
+
+impl From<u8> for OpConj {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::AND,
+            1 => Self::OR,
+            2 => Self::XOR,
+            _ => Self::AND,
+        }
+    }
 }
 
 impl OpCode {

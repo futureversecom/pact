@@ -21,23 +21,24 @@ use crate::types::{Numeric, PactType, StringLike};
 use core::convert::TryInto;
 
 /// A blanket trait for conversion into PactType
-pub trait IntoPact<'a, I> {
-    fn into_pact(self) -> Result<PactType<'a>, ()>;
+pub trait IntoPact<I> {
+    fn into_pact(self) -> Result<PactType, ()>;
 }
 
 /// Impl for all types that implement fallible conversion into u64
 // FIXME: impl Into<u128> after this is implemented https://github.com/cennznet/pact/issues/1
-impl<'a, T: TryInto<u64> + Copy> IntoPact<'a, &T> for T {
-    fn into_pact(self) -> Result<PactType<'a>, ()> {
+impl<T: TryInto<u64> + Copy> IntoPact<&T> for T {
+    fn into_pact(self) -> Result<PactType, ()> {
         let result: u64 = self.try_into().map_err(|_| ())?;
         Ok(PactType::Numeric(Numeric(result)))
     }
 }
 
 /// Impl for all types that can be converted to &[u8]
-impl<'a, T: AsRef<[u8]> + ?Sized> IntoPact<'a, &T> for &'a T {
-    fn into_pact(self) -> Result<PactType<'a>, ()> {
-        Ok(PactType::StringLike(StringLike(self.as_ref())))
+impl<T: AsRef<[u8]> + ?Sized> IntoPact<&T> for &T {
+    fn into_pact(self) -> Result<PactType, ()> {
+        let v = self.as_ref().to_vec();
+        Ok(PactType::StringLike(StringLike(v)))
     }
 }
 
@@ -63,11 +64,14 @@ mod tests {
     fn it_converts_string_like() {
         assert_eq!(
             "test".into_pact(),
-            Ok(PactType::StringLike(StringLike(b"test"))),
+            Ok(PactType::StringLike(StringLike(b"test".to_vec()))),
         );
 
         let v: Vec<u8> = vec![116, 101, 115, 116];
-        assert_eq!(v.into_pact(), Ok(PactType::StringLike(StringLike(b"test"))),);
+        assert_eq!(
+            v.into_pact(),
+            Ok(PactType::StringLike(StringLike(b"test".to_vec()))),
+        );
 
         // Assertion for fixed hash types
         let h32 = b"0x01";
@@ -80,14 +84,38 @@ mod tests {
         let h520 = b"0x012345678910111213141516171819202122232425262728293031323334353";
 
         let tests = vec![
-            (h32.into_pact(), Ok(PactType::StringLike(StringLike(h32)))),
-            (h64.into_pact(), Ok(PactType::StringLike(StringLike(h64)))),
-            (h128.into_pact(), Ok(PactType::StringLike(StringLike(h128)))),
-            (h160.into_pact(), Ok(PactType::StringLike(StringLike(h160)))),
-            (h256.into_pact(), Ok(PactType::StringLike(StringLike(h256)))),
-            (h264.into_pact(), Ok(PactType::StringLike(StringLike(h264)))),
-            (h512.into_pact(), Ok(PactType::StringLike(StringLike(h512)))),
-            (h520.into_pact(), Ok(PactType::StringLike(StringLike(h520)))),
+            (
+                h32.into_pact(),
+                Ok(PactType::StringLike(StringLike(h32.to_vec()))),
+            ),
+            (
+                h64.into_pact(),
+                Ok(PactType::StringLike(StringLike(h64.to_vec()))),
+            ),
+            (
+                h128.into_pact(),
+                Ok(PactType::StringLike(StringLike(h128.to_vec()))),
+            ),
+            (
+                h160.into_pact(),
+                Ok(PactType::StringLike(StringLike(h160.to_vec()))),
+            ),
+            (
+                h256.into_pact(),
+                Ok(PactType::StringLike(StringLike(h256.to_vec()))),
+            ),
+            (
+                h264.into_pact(),
+                Ok(PactType::StringLike(StringLike(h264.to_vec()))),
+            ),
+            (
+                h512.into_pact(),
+                Ok(PactType::StringLike(StringLike(h512.to_vec()))),
+            ),
+            (
+                h520.into_pact(),
+                Ok(PactType::StringLike(StringLike(h520.to_vec()))),
+            ),
         ];
         for (lhs, rhs) in tests {
             assert_eq!(lhs, rhs);
@@ -143,15 +171,15 @@ mod tests {
         let tests = vec![
             (
                 s1.into_pact(),
-                Ok(PactType::StringLike(StringLike(b"test1"))),
+                Ok(PactType::StringLike(StringLike(b"test1".to_vec()))),
             ),
             (
                 s2.into_pact(),
-                Ok(PactType::StringLike(StringLike(b"test2"))),
+                Ok(PactType::StringLike(StringLike(b"test2".to_vec()))),
             ),
             (
                 s3.into_pact(),
-                Ok(PactType::StringLike(StringLike(b"test3"))),
+                Ok(PactType::StringLike(StringLike(b"test3".to_vec()))),
             ),
         ];
         for (lhs, rhs) in tests {

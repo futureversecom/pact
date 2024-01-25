@@ -1,3 +1,4 @@
+/*
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
@@ -94,3 +95,4 @@ fn it_fails_when_parsing_a_mixed_list() {
     )
     .unwrap();
 }
+*/

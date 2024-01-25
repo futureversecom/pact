@@ -129,13 +129,13 @@ fn eval_conjunction(conjunction: &Conjunction, lhs: bool, rhs: bool) -> Result<b
 #[cfg_attr(feature = "std", derive(Debug))]
 pub struct Interpreter<'a> {
     state: State,
-    input_data: &'a [PactType<'a>],
-    user_data: &'a [PactType<'a>],
+    input_data: &'a [PactType],
+    user_data: &'a [PactType],
 }
 
 impl<'a> Interpreter<'a> {
     /// Return a new interpreter, ready for execution
-    pub fn new(input_data: &'a [PactType<'a>], user_data: &'a [PactType<'a>]) -> Self {
+    pub fn new(input_data: &'a [PactType], user_data: &'a [PactType]) -> Self {
         Interpreter {
             state: State::Initial,
             input_data,
