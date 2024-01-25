@@ -3,3 +3,4 @@
 node_modules
 libNode
 libBrowser
+target/*
