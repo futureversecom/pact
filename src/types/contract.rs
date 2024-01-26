@@ -48,7 +48,7 @@ impl Contract {
         buf.extend(self.bytecode.clone());
     }
     /// Decode a pact contract from v0 binary format
-    pub fn decode(buf: Vec<u8>) -> Result<Self, BinaryFormatErr> {
+    pub fn decode(buf: &Vec<u8>) -> Result<Self, BinaryFormatErr> {
         if buf.len() < 2 {
             return Err(BinaryFormatErr::TooShort);
         }
