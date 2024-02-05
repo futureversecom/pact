@@ -16,23 +16,11 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-// 'std' is required for parser and compilation
 // interpreter can execute in `no_std` environment
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std as alloc;
-
-#[cfg(feature = "compiler")]
-extern crate pest;
-#[cfg(feature = "compiler")]
-#[macro_use]
-extern crate pest_derive;
-
-#[cfg(feature = "compiler")]
-pub mod compiler;
-#[cfg(feature = "compiler")]
-pub mod parser;
 
 pub mod interpreter;
 pub mod types;

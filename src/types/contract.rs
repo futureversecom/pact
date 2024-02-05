@@ -75,7 +75,7 @@ mod test {
     #[test]
     fn contract_binary_format_unsupported_version() {
         assert_eq!(
-            Contract::decode([1, 0].to_vec()),
+            Contract::decode([1, 0].to_vec().as_ref()),
             Err(BinaryFormatErr::UnsupportedVersion)
         );
     }
@@ -83,7 +83,7 @@ mod test {
     #[test]
     fn contract_binary_format_too_short() {
         assert_eq!(
-            Contract::decode([0].to_vec()),
+            Contract::decode([0].to_vec().as_ref()),
             Err(BinaryFormatErr::TooShort)
         );
     }

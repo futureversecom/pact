@@ -13,8 +13,3 @@ pest_derive = {version = "2.1.0", optional = true }
 [features]
 default = ["std"]
 std = []
-#std = ["compiler"]
-#compiler = [
-#    "pest",
-#    "pest_derive",
-#]
