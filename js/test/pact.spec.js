@@ -19,6 +19,7 @@ describe("wasm pact", () => {
         let encoded_pact = pactContract.encode();
     });
 
+    // refer to ../../src/types/contract.rs "contract_encode_1" test for rust side output
     test("pact contract encode same as rust output 1", () => {
         let expected_payload = new Uint8Array([
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 128, 16, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0

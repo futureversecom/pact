@@ -158,16 +158,3 @@ impl OpCodeConjunction {
         vec![payload]
     }
 }
-
-#[test]
-fn test_OpCodeComparator_encode() {
-    let opcomp = OpCodeComparator(Comparator {
-        load: OpLoad::INPUT_VS_USER,
-        op: OpComp::EQ,
-        indices: OpIndices { lhs: 0, rhs: 0 },
-        invert: false,
-    });
-
-    let encoded = opcomp.encode();
-    println!("{:?}", encoded);
-}
