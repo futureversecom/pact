@@ -3,7 +3,7 @@
  version = "0.0.1"
  authors = ["The Root Network Team"]
  edition = "2021"
- description = "JS/Wasm bindings for the rust TRNNut codec"
+ description = "JS/Wasm bindings for the rust TRN-Pact codec"
  license = "UNLICENSED"
  repository = "https://github.com/futureversecom/trn-trnnut-rs"
 
