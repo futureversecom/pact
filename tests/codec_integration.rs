@@ -17,8 +17,8 @@
 //! Codec integration tests
 
 #![cfg(test)]
-use pact::interpreter::{Comparator, OpCode, OpComp, OpIndices, OpLoad};
-use pact::types::{BinaryFormatErr, Contract, DataTable, Numeric, PactType, StringLike};
+use trn_pact::interpreter::{Comparator, OpCode, OpComp, OpIndices, OpLoad};
+use trn_pact::types::{BinaryFormatErr, Contract, DataTable, Numeric, PactType, StringLike};
 
 #[test]
 fn contract_binary_format_codec() {
@@ -61,19 +61,19 @@ fn contract_binary_format_codec() {
 
 #[test]
 fn contract_binary_format_malformed_data_table() {
-    let mut malformed_short: Vec<u8> = vec![0, 1];
+    let malformed_short: Vec<u8> = vec![0, 1];
     assert_eq!(
         Contract::decode(&malformed_short),
         Err(BinaryFormatErr::MalformedDataTable("missing type ID byte"))
     );
 
-    let mut bad_type_id = vec![0, 0b1000_0000, 0b0000_0001, 0b0000_0000];
+    let bad_type_id = vec![0, 0b1000_0000, 0b0000_0001, 0b0000_0000];
     assert_eq!(
         Contract::decode(&bad_type_id),
         Err(BinaryFormatErr::MalformedDataTable("unsupported type ID"))
     );
 
-    let mut numeric_too_small = vec![0, 0b1000_0000, 0b1000_0000, 0b0100_0000, 0, 0];
+    let numeric_too_small = vec![0, 0b1000_0000, 0b1000_0000, 0b0100_0000, 0, 0];
     assert_eq!(
         Contract::decode(&numeric_too_small),
         Err(BinaryFormatErr::MalformedDataTable(

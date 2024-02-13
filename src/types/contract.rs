@@ -69,7 +69,6 @@ impl Contract {
 mod test {
     use super::*;
     use crate::interpreter::{Comparator, Conjunction, OpCode, OpComp, OpConj, OpLoad};
-    use crate::types::opcode::LoadSource;
     use crate::types::{Numeric, PactType, StringLike};
 
     #[test]

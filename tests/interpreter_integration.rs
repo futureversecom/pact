@@ -17,7 +17,7 @@
 //! Interpreter integration tests
 
 #![cfg(test)]
-use pact::{
+use trn_pact::{
     interpreter::{self, InterpErr},
     interpreter::{Comparator, Conjunction, OpCode, OpComp, OpConj, OpLoad},
     types::{Numeric, PactType, StringLike},
