@@ -1,13 +1,13 @@
-const {OpLoad, OpComp, OpConj} = require("../libNode/pact");
-const Pact = require('../libNode/pact').Pact;
-const OpCodeComparator = require('../libNode/pact').OpCodeComparator;
-const OpCodeConjunction = require('../libNode/pact').OpCodeConjunction;
+const {OpLoad, OpComp, OpConj} = require("../pkg-node/trn-pact");
+const Pact = require('../pkg-node/trn-pact').Pact;
+const OpCodeComparator = require('../pkg-node/trn-pact').OpCodeComparator;
+const OpCodeConjunction = require('../pkg-node/trn-pact').OpCodeConjunction;
 
 describe("wasm pact", () => {
     test("can construct pact contract and encode", () => {
 
         let data_table = ["10","20"];
-        let comp = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,0,0,false);
+        let comp = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,0,0,false);
         let conj = new OpCodeConjunction(OpConj.AND,false);
         let bytecode = new Uint8Array([
             ...comp.encode(),
@@ -25,7 +25,7 @@ describe("wasm pact", () => {
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 128, 16, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ]);
         let data_table = ["10","20"];
-        let comp = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,0,0,false);
+        let comp = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,0,0,false);
         let bytecode = new Uint8Array([
             ...comp.encode(),
         ]);
@@ -39,8 +39,8 @@ describe("wasm pact", () => {
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 0, 48, 104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 0, 0, 0, 17
         ]);
         let data_table = ["10","hello, world"];
-        let comp = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,0,0,false);
-        let comp2 = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,1,1,false);
+        let comp = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,0,0,false);
+        let comp2 = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,1,1,false);
         let bytecode = new Uint8Array([
             ...comp.encode(),
             ...comp2.encode(),
@@ -55,8 +55,8 @@ describe("wasm pact", () => {
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 0, 48, 104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 16, 0, 8, 17
         ]);
         let data_table = ["10","hello, world"];
-        let comp = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,0,0,true);
-        let comp2 = new OpCodeComparator(OpLoad.INPUT_VS_INPUT, OpComp.EQ,1,1,false);
+        let comp = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,0,0,true);
+        let comp2 = new OpCodeComparator(OpLoad.InputVsInput, OpComp.EQ,1,1,false);
         let bytecode = new Uint8Array([
             ...comp.encode(),
             ...comp2.encode(),
@@ -71,7 +71,7 @@ describe("wasm pact", () => {
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 128, 16, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32
         ]);
         let data_table = ["10","20"];
-        let comp = new OpCodeComparator(OpLoad.INPUT_VS_USER, OpComp.EQ,0,0,false);
+        let comp = new OpCodeComparator(OpLoad.InputVsUser, OpComp.EQ,0,0,false);
         let conj = new OpCodeConjunction(OpConj.AND,false);
         let bytecode = new Uint8Array([
             ...comp.encode(),
