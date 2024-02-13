@@ -67,10 +67,12 @@ jobs:
       - name: Install wasm-pack
         run: pnpm install -g wasm-pack
         shell: bash
+        working-directory: js
 
       - name: Build JS wasm library using wasm-pack
         run: pnpm build
         shell: bash
+        working-directory: js
 
       - name: Test JS wasm library
         run: pnpm test
