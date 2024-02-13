@@ -1,4 +1,4 @@
-// Copyright 2019 Centrality Investments Limited
+// Copyright 2023-2024 Futureverse Corporation Limited
 // This file is part of Pact.
 //
 // Licensed under the LGPL, Version 3.0 (the "License");
@@ -11,8 +11,8 @@
 
 // You should have received a copy of the GNU General Public License
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/gplv3.txt>
+//   <https://futureverse.com/licenses/lgplv3.txt>
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
