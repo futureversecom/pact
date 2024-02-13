@@ -1,5 +1,5 @@
 [package]
-name = "pact"
+name = "trn-pact"
 version = "0.2.0"
 authors = ["The Root Network Team"]
 edition = "2021"
