@@ -1,31 +1,16 @@
-// Copyright 2022-2023 Futureverse Corporation Limited
+// Copyright 2023-2024 Futureverse Corporation Limited
 
 //! Provide JS-Rust API bindings to create and inspect TRNNut
-use pact::types::{
-    opcode::{Comparator, Conjunction, OpCode, OpComp, OpIndices, OpLoad},
-    Contract, DataTable, Numeric, PactType,
-    PactType::{Numeric as NumericE, StringLike as StringLikeE},
-    StringLike,
+use trn_pact::types::{
+    opcode::{Comparator, Conjunction, OpCode, OpIndices},
+    Contract, DataTable, Numeric, PactType, StringLike,
 };
-use parity_scale_codec::{Decode, Encode};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
-}
-
-#[inline]
-fn from_slice_32(bytes: &[u8]) -> [u8; 32] {
-    let mut array = [0; 32];
-    if bytes.len() < 32 {
-        log("expected 32 byte array");
-        return array;
-    }
-    let bytes = &bytes[..array.len()]; // panics if not enough data
-    array.copy_from_slice(bytes);
-    array
 }
 
 /// A js handle for a rust versioned pact contract struct
@@ -82,8 +67,8 @@ pub enum LoadSourceJS {
 
 #[wasm_bindgen(js_name = OpLoad)]
 pub enum OpLoadJS {
-    INPUT_VS_USER,
-    INPUT_VS_INPUT,
+    InputVsUser,
+    InputVsInput,
 }
 
 #[wasm_bindgen(js_name = OpComp)]
@@ -127,7 +112,7 @@ impl OpCodeComparator {
     }
 
     pub fn encode(&self) -> Vec<u8> {
-        let mut payload: u8 = OpCode::COMP(self.0).into();
+        let payload: u8 = OpCode::COMP(self.0).into();
         // add indices
         let indice: u8 = (self.0.indices.lhs << 4) | self.0.indices.rhs;
         vec![payload, indice]

@@ -1,6 +1,5 @@
 # js build output
 *.tgz
-node_modules
-libNode
-libBrowser
-target/*
+node_modules/
+pkg/
+pkg-node/
