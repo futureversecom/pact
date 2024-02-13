@@ -1,0 +1,102 @@
+name: CI
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      - main
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: test ${{ matrix.rust }} ${{ matrix.flags }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: ["stable", "1.73"]
+        flags: ["--all-features"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+      - name: test
+        run: cargo test ${{ matrix.flags }}
+
+  js-wasm-build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.73
+        with:
+          toolchain: nightly-x86_64-unknown-linux-gnu
+          target: wasm32-unknown-unknown
+          components: rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      - run: cargo fmt --all --check
+        working-directory: js
+      - run: cargo check --target wasm32-unknown-unknown
+        working-directory: js
+
+      # https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#caching-packages-data
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+          cache-dependency-path: js/pnpm-lock.yaml
+      - name: Install JS deps
+        run: pnpm install
+        shell: bash
+        working-directory: js
+      - name: Install wasm-pack
+        run: pnpm install -g wasm-pack
+        shell: bash
+
+      - name: Build JS wasm library using wasm-pack
+        run: pnpm build
+        shell: bash
+
+      - name: Test JS wasm library
+        run: pnpm test
+        working-directory: js
+
+  # clippy:
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: dtolnay/rust-toolchain@1.73
+  #       with:
+  #         components: clippy
+  #     - uses: Swatinem/rust-cache@v2
+  #       with:
+  #         cache-on-failure: true
+  #     - run: cargo clippy --workspace --all-targets --all-features
+  #       env:
+  #         RUSTFLAGS: -Dwarnings
+
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.73
+        with:
+          components: rustfmt
+      - run: cargo fmt --all --check
