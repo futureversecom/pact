@@ -10,7 +10,7 @@ checksum = "99528ca30abb9495c7e106bf7c3177b257c62040fc0f2909fe470b0f43097296"
 
 [[package]]
 name = "trn-pact"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "bit_reverse",
 ]

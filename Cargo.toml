@@ -1,6 +1,8 @@
 [package]
 name = "trn-pact"
-version = "0.2.0"
+version = "0.1.0"
+description = "An embedded contract DSL and toolchain for doughnuts in the TRN permission domain"
+license = "GPL-3.0"
 authors = ["The Root Network Team"]
 edition = "2021"
 
