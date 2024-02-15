@@ -1,6 +1,7 @@
 # js build output
 *.tgz
 node_modules/
+pkg/
 pact-*/
 
 # rust build output

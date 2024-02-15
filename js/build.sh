@@ -2,20 +2,16 @@
 
 set -ex
 
-# Check if jq is installed
+# check if jq is installed
 if ! [ -x "$(command -v jq)" ]; then
     echo "jq is not installed" >& 2
     exit 1
 fi
 
-# Clean previous packages
-if [ -d "pact-web" ]; then
-    rm -rf pact-web
-fi
-
-if [ -d "pact-nodejs" ]; then
-    rm -rf pact-nodejs
-fi
+# clean previous packages
+rm -rf pkg/
+rm -rf pact-web
+rm -rf pact-nodejs
 
 # build for web js target
 rustup run nightly wasm-pack build --target web --scope therootnetwork --out-name pact-web --release --out-dir pact-web
