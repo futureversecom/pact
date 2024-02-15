@@ -10,8 +10,8 @@ fi
 
 # clean previous packages
 rm -rf pkg/
-rm -rf pact-web
-rm -rf pact-nodejs
+rm -rf pact-web/
+rm -rf pact-nodejs/
 
 # build for web js target
 rustup run nightly wasm-pack build --target web --scope therootnetwork --out-name pact-web --release --out-dir pact-web
