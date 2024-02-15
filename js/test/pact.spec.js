@@ -1,7 +1,7 @@
-const {OpLoad, OpComp, OpConj} = require("../pkg-node/trn-pact");
-const Pact = require('../pkg-node/trn-pact').Pact;
-const OpCodeComparator = require('../pkg-node/trn-pact').OpCodeComparator;
-const OpCodeConjunction = require('../pkg-node/trn-pact').OpCodeConjunction;
+const {OpLoad, OpComp, OpConj} = require("../pact-nodejs");
+const Pact = require('../pact-nodejs').Pact;
+const OpCodeComparator = require('../pact-nodejs').OpCodeComparator;
+const OpCodeConjunction = require('../pact-nodejs').OpCodeConjunction;
 
 describe("wasm pact", () => {
     test("can construct pact contract and encode", () => {

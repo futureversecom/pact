@@ -9,23 +9,20 @@ if ! [ -x "$(command -v jq)" ]; then
 fi
 
 # Clean previous packages
-if [ -d "pkg" ]; then
-    rm -rf pkg
+if [ -d "pact-web" ]; then
+    rm -rf pact-web
 fi
 
-if [ -d "pkg-node" ]; then
-    rm -rf pkg-node
+if [ -d "pact-nodejs" ]; then
+    rm -rf pact-nodejs
 fi
 
-PKG_NAME="trn-pact"
+# build for web js target
+rustup run nightly wasm-pack build --target web --scope therootnetwork --out-name pact-web --release --out-dir pact-web
+# modify package.json for web
+jq '.name="@therootnetwork/pact-web"' pact-web/package.json > temp.json && mv temp.json pact-web/package.json
 
-# Build for both targets
-rustup run nightly wasm-pack build --target web --scope therootnetwork --out-name $PKG_NAME --release
-rustup run nightly wasm-pack build --target nodejs --scope therootnetwork --out-name $PKG_NAME --release --out-dir pkg-node
-
-# Merge nodejs & browser packages into `pkg/` directory
-cp "pkg-node/${PKG_NAME}.js" "pkg/${PKG_NAME}_main.js"
-sed "s/require[\(]'\.\/${PKG_NAME}/require\('\.\/${PKG_NAME}_main/" "pkg-node/${PKG_NAME}.js" > "pkg/${PKG_NAME}_bg.js"
-jq ".files += [\"${PKG_NAME}_bg.js\"]" pkg/package.json \
-  | jq ".main = \"${PKG_NAME}_main.js\"" > pkg/temp.json
-mv pkg/temp.json pkg/package.json
+# build for nodejs target
+rustup run nightly wasm-pack build --target nodejs --scope therootnetwork --out-name pact-nodejs --release --out-dir pact-nodejs
+# modify package.json for nodejs
+jq '.name="@therootnetwork/pact-nodejs"' pact-nodejs/package.json > temp.json && mv temp.json pact-nodejs/package.json
