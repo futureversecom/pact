@@ -4,7 +4,7 @@
  authors = ["The Root Network Team"]
  edition = "2021"
  description = "JS/Wasm bindings for the rust TRN-Pact codec"
- license = "UNLICENSED"
+ license = "Apache-2.0"
  repository = "https://github.com/futureversecom/trn-trnnut-rs"
 
  [lib]

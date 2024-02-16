@@ -1,7 +1,7 @@
 {
   "name": "@therootnetwork/pact-wasm",
   "author": "The Root Network Team",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "version": "0.0.1",
   "description": "Wasm pact codec",
   "repository": {
