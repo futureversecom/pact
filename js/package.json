@@ -1,0 +1,26 @@
+{
+  "name": "@therootnetwork/pact-wasm",
+  "author": "The Root Network Team",
+  "license": "Apache-2.0",
+  "version": "0.0.1",
+  "description": "Wasm pact codec",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futureversecom/trn-pact.git"
+  },
+  "keywords": [
+    "pact",
+    "trn-pact"
+  ],
+  "bugs": {
+    "url": "https://github.com/futureversecom/trn-pact/issues"
+  },
+  "homepage": "https://github.com/futureversecom/trn-pact/js#readme",
+  "scripts": {
+    "build": "./build.sh",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
+}

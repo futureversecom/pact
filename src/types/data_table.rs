@@ -1,7 +1,7 @@
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
-// Licensed under the LGPL, Version 3.0 (the "License");
+// Licensed under the Apache License v2.0;
 // you may not use this file except in compliance with the License.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -9,10 +9,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the Apache License v2.0
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/apachev2.txt>
 
 use crate::types::PactType;
 use alloc::vec::Vec;
@@ -20,15 +19,15 @@ use bit_reverse::ParallelReverse;
 
 /// A pact contract's static data table
 #[cfg_attr(feature = "std", derive(PartialEq, Debug))]
-pub struct DataTable<'a>(Vec<PactType<'a>>);
+pub struct DataTable(Vec<PactType>);
 
-impl<'a> DataTable<'a> {
+impl DataTable {
     /// Create a new `DataTable` with `values`
-    pub fn new(values: Vec<PactType<'a>>) -> Self {
+    pub fn new(values: Vec<PactType>) -> Self {
         Self { 0: values }
     }
     /// Push a PactType value into the table
-    pub fn push(&mut self, val: PactType<'a>) {
+    pub fn push(&mut self, val: PactType) {
         self.0.push(val);
     }
     /// Encode the data table
@@ -40,12 +39,12 @@ impl<'a> DataTable<'a> {
     }
     /// Decode a DataTable from `buf`.
     /// Return the DataTable and # of bytes read or error on failure.
-    pub fn decode(buf: &'a [u8]) -> Result<(Self, usize), &'static str> {
+    pub fn decode(buf: Vec<u8>) -> Result<(Self, usize), &'static str> {
         let mut table = DataTable(Default::default());
         let mut offset: usize = 1;
         let l = buf[0].swap_bits();
         for _ in 0..l {
-            let (pact_type, read) = PactType::decode(&buf[offset..])?;
+            let (pact_type, read) = PactType::decode(buf[offset..].to_vec())?;
             table.push(pact_type);
             offset += read;
         }
@@ -53,8 +52,8 @@ impl<'a> DataTable<'a> {
     }
 }
 
-impl<'a> AsRef<[PactType<'a>]> for DataTable<'a> {
-    fn as_ref(&self) -> &[PactType<'a>] {
+impl AsRef<[PactType]> for DataTable {
+    fn as_ref(&self) -> &[PactType] {
         &(self.0)
     }
 }
@@ -69,7 +68,7 @@ mod tests {
         let table = DataTable::new(vec![
             PactType::Numeric(Numeric(111)),
             PactType::Numeric(Numeric(333)),
-            PactType::StringLike(StringLike("testing".as_bytes())),
+            PactType::StringLike(StringLike(b"testing".to_vec())),
         ]);
         let mut encoded: Vec<u8> = Vec::new();
         table.encode(&mut encoded);
@@ -105,9 +104,9 @@ mod tests {
         let expected = DataTable::new(vec![
             PactType::Numeric(Numeric(111)),
             PactType::Numeric(Numeric(333)),
-            PactType::StringLike(StringLike("testing".as_bytes())),
+            PactType::StringLike(StringLike(b"testing".to_vec())),
         ]);
-        let (result, bytes_read) = DataTable::decode(&buf).expect("it decodes");
+        let (result, bytes_read) = DataTable::decode(buf.clone()).expect("it decodes");
 
         assert_eq!(result, expected);
         assert_eq!(bytes_read, buf.len() as usize);

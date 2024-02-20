@@ -1,7 +1,7 @@
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
-// Licensed under the LGPL, Version 3.0 (the "License");
+// Licensed under the Apache License v2.0;
 // you may not use this file except in compliance with the License.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -9,10 +9,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the Apache License v2.0
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/apachev2.txt>
 
 //!
 //! Types in the pact interpreter aka "PactType"s
@@ -23,7 +22,7 @@ use bit_reverse::ParallelReverse;
 /// A string-like type
 #[cfg_attr(feature = "std", derive(Debug))]
 #[derive(PartialEq, PartialOrd, Clone)]
-pub struct StringLike<'a>(pub &'a [u8]);
+pub struct StringLike(pub Vec<u8>);
 
 /// A numeric type
 #[cfg_attr(feature = "std", derive(Debug))]
@@ -33,13 +32,13 @@ pub struct Numeric(pub u64);
 /// Over-arching pact type system
 #[cfg_attr(feature = "std", derive(Debug))]
 #[derive(Clone, PartialEq)]
-pub enum PactType<'a> {
-    StringLike(StringLike<'a>),
+pub enum PactType {
+    StringLike(StringLike),
     Numeric(Numeric),
-    List(Vec<PactType<'a>>),
+    List(Vec<PactType>),
 }
 
-impl<'a> PactType<'a> {
+impl PactType {
     /// Encode the PactType into `buf`c
     pub fn encode(&self, buf: &mut Vec<u8>) {
         match self {
@@ -76,7 +75,7 @@ impl<'a> PactType<'a> {
     }
     /// Decode a pact type from the given buffer
     /// Returns (decoded type, bytes read) or error on failure
-    pub fn decode(buf: &'a [u8]) -> Result<(Self, usize), &'static str> {
+    pub fn decode(buf: Vec<u8>) -> Result<(Self, usize), &'static str> {
         // Check type header bytes
         match buf.len() {
             0 => return Err("missing type ID byte"),
@@ -97,7 +96,7 @@ impl<'a> PactType<'a> {
         match buf[0].swap_bits() {
             0 => {
                 let read_length = read_offset + data_length;
-                let s = PactType::StringLike(StringLike(&buf[read_offset..read_length]));
+                let s = PactType::StringLike(StringLike(buf[read_offset..read_length].to_vec()));
                 Ok((s, read_length))
             }
             1 => {
@@ -123,7 +122,7 @@ impl<'a> PactType<'a> {
                 let mut remaining_length = data_length;
 
                 while remaining_length > 0 {
-                    let (new_value, offset) = Self::decode(&buf[read_offset..])?;
+                    let (new_value, offset) = Self::decode(buf[read_offset..].to_vec())?;
                     read_offset = read_offset + offset;
                     remaining_length = remaining_length
                         .checked_sub(offset)
@@ -143,7 +142,7 @@ mod tests {
 
     #[test]
     fn it_encodes_string_like() {
-        let s = PactType::StringLike(StringLike(b"hello world"));
+        let s = PactType::StringLike(StringLike(b"hello world".to_vec()));
         let buf: &mut Vec<u8> = &mut Vec::new();
         s.encode(buf);
         assert_eq!(buf[0], 0);
@@ -165,9 +164,9 @@ mod tests {
     #[test]
     fn it_encodes_string_list() {
         let l = PactType::List(vec![
-            PactType::StringLike(StringLike(b"we're no")),
-            PactType::StringLike(StringLike(b"strangers")),
-            PactType::StringLike(StringLike(b"to love")),
+            PactType::StringLike(StringLike(b"we're no".to_vec())),
+            PactType::StringLike(StringLike(b"strangers".to_vec())),
+            PactType::StringLike(StringLike(b"to love".to_vec())),
         ]);
         let buf: &mut Vec<u8> = &mut Vec::new();
         l.encode(buf);
@@ -207,11 +206,11 @@ mod tests {
         let mut buf = vec![0, 11];
         buf = buf.into_iter().map(|b| b.swap_bits()).collect(); // convert to LE bit orders
         buf.extend("hello world".as_bytes());
-        let (string_type, bytes_read) = PactType::decode(&buf).expect("it decodes");
+        let (string_type, bytes_read) = PactType::decode(buf).expect("it decodes");
 
         assert_eq!(
             string_type,
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         );
 
         assert_eq!(bytes_read, 13usize,);
@@ -221,7 +220,7 @@ mod tests {
     fn it_decodes_numeric() {
         let mut encoded: Vec<u8> = vec![1, 8, 123, 0, 0, 0, 0, 0, 0, 0];
         encoded = encoded.into_iter().map(|b| b.swap_bits()).collect(); // convert to LE bit orders
-        let (numeric_type, bytes_read) = PactType::decode(&encoded).expect("it decodes");
+        let (numeric_type, bytes_read) = PactType::decode(encoded).expect("it decodes");
 
         assert_eq!(numeric_type, PactType::Numeric(Numeric(123)));
         assert_eq!(10usize, bytes_read,);
@@ -248,13 +247,13 @@ mod tests {
         ]
         .concat();
 
-        let (list_type, bytes_read) = PactType::decode(&buf).expect("it decodes");
+        let (list_type, bytes_read) = PactType::decode(buf).expect("it decodes");
 
         let expected = PactType::List(vec![
-            PactType::StringLike(StringLike(b"you know")),
-            PactType::StringLike(StringLike(b"the rules")),
-            PactType::StringLike(StringLike(b"and so")),
-            PactType::StringLike(StringLike(b"do I")),
+            PactType::StringLike(StringLike(b"you know".to_vec())),
+            PactType::StringLike(StringLike(b"the rules".to_vec())),
+            PactType::StringLike(StringLike(b"and so".to_vec())),
+            PactType::StringLike(StringLike(b"do I".to_vec())),
         ]);
 
         assert_eq!(list_type, expected,);
@@ -279,7 +278,7 @@ mod tests {
         .map(|b| b.swap_bits())
         .collect();
 
-        let (list_type, bytes_read) = PactType::decode(&buf).expect("it decodes");
+        let (list_type, bytes_read) = PactType::decode(buf).expect("it decodes");
 
         let expected = PactType::List(vec![
             PactType::Numeric(Numeric(0xefcd_ab89_6745_2301)),
@@ -304,7 +303,7 @@ mod tests {
         .map(|b| b.swap_bits())
         .collect();
 
-        assert_eq!(PactType::decode(&buf), Err("type length > buffer length"));
+        assert_eq!(PactType::decode(buf), Err("type length > buffer length"));
 
         let list_header: Vec<u8> = vec![2, 5];
         let buf: Vec<u8> = [
@@ -317,48 +316,54 @@ mod tests {
         .map(|b| b.swap_bits())
         .collect();
 
-        assert_eq!(PactType::decode(&buf), Err("list length overflow"));
+        assert_eq!(PactType::decode(buf), Err("list length overflow"));
     }
 
     #[test]
     fn it_fails_with_missing_type_id() {
-        assert_eq!(PactType::decode(&[]), Err("missing type ID byte"));
+        assert_eq!(PactType::decode(vec![]), Err("missing type ID byte"));
     }
 
     #[test]
     fn it_fails_with_missing_type_length() {
-        assert_eq!(PactType::decode(&[0]), Err("missing type length byte"));
+        assert_eq!(
+            PactType::decode([0].to_vec()),
+            Err("missing type length byte")
+        );
     }
 
     #[test]
     #[should_panic(expected = "type length > buffer length")]
     fn it_fails_with_short_string_like() {
-        PactType::decode(&[0, 11]).unwrap();
+        PactType::decode([0, 11].to_vec()).unwrap();
     }
 
     #[test]
     #[should_panic(expected = "implementation only supports 64-bit numerics")]
     fn it_fails_with_u128_numeric() {
-        PactType::decode(&[
-            1.swap_bits(),
-            16.swap_bits(),
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ])
+        PactType::decode(
+            [
+                1.swap_bits(),
+                16.swap_bits(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ]
+            .to_vec(),
+        )
         .unwrap();
     }
 }

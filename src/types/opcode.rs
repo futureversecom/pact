@@ -1,7 +1,7 @@
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
-// Licensed under the LGPL, Version 3.0 (the "License");
+// Licensed under the Apache License v2.0;
 // you may not use this file except in compliance with the License.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -9,10 +9,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the Apache License v2.0
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/apachev2.txt>
 
 //!
 //! Pact OpCodes
@@ -94,6 +93,16 @@ pub enum OpLoad {
     INPUT_VS_INPUT,
 }
 
+impl From<u8> for OpLoad {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::INPUT_VS_USER,
+            1 => Self::INPUT_VS_INPUT,
+            _ => Self::INPUT_VS_USER,
+        }
+    }
+}
+
 /// Enum of avaliable comparator OpCode operations
 #[allow(non_camel_case_types)]
 #[cfg_attr(feature = "std", derive(Debug))]
@@ -105,6 +114,18 @@ pub enum OpComp {
     IN,
 }
 
+impl From<u8> for OpComp {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::EQ,
+            1 => Self::GT,
+            2 => Self::GTE,
+            3 => Self::IN,
+            _ => Self::EQ,
+        }
+    }
+}
+
 /// Enum of avaliable conjunction OpCode operations
 #[allow(non_camel_case_types)]
 #[cfg_attr(feature = "std", derive(Debug))]
@@ -113,6 +134,17 @@ pub enum OpConj {
     AND,
     OR,
     XOR,
+}
+
+impl From<u8> for OpConj {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::AND,
+            1 => Self::OR,
+            2 => Self::XOR,
+            _ => Self::AND,
+        }
+    }
 }
 
 impl OpCode {

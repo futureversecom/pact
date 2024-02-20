@@ -1,7 +1,7 @@
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
-// Licensed under the LGPL, Version 3.0 (the "License");
+// Licensed under the Apache License v2.0;
 // you may not use this file except in compliance with the License.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -9,15 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the Apache License v2.0
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/apachev2.txt>
 
 //! Interpreter integration tests
 
 #![cfg(test)]
-use pact::{
+use trn_pact::{
     interpreter::{self, InterpErr},
     interpreter::{Comparator, Conjunction, OpCode, OpComp, OpConj, OpLoad},
     types::{Numeric, PactType, StringLike},
@@ -28,11 +27,11 @@ fn it_does_an_eq_comparison() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -147,8 +146,8 @@ fn it_fails_with_bad_type_operation_on_stringlike() {
     ];
     for op in bad_op_codes.into_iter() {
         let result = interpreter::interpret(
-            &[PactType::StringLike(StringLike(b"test"))],
-            &[PactType::StringLike(StringLike(b"test"))],
+            &[PactType::StringLike(StringLike(b"test".to_vec()))],
+            &[PactType::StringLike(StringLike(b"test".to_vec()))],
             &[op, 0x00],
         );
 
@@ -235,11 +234,11 @@ fn it_does_an_and_conjunction_ok() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -257,11 +256,11 @@ fn it_does_an_or_conjunction_ok() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(321)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -276,11 +275,11 @@ fn it_does_an_or_conjunction_ok() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -298,11 +297,11 @@ fn it_does_a_xor_conjunction_ok() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(321)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -320,11 +319,11 @@ fn it_does_an_and_conjunction_evaluates_false() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(321)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -342,11 +341,11 @@ fn it_does_an_or_conjunction_evaluates_false() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(321)),
-            PactType::StringLike(StringLike(b"world hello")),
+            PactType::StringLike(StringLike(b"world hello".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -364,11 +363,11 @@ fn it_does_a_xor_conjunction_evaluates_false() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             OpCode::COMP(Comparator::new(OpComp::EQ)).into(),
@@ -403,11 +402,11 @@ fn it_does_an_eq_comparison_evaluates_false() {
     let result = interpreter::interpret(
         &[
             PactType::Numeric(Numeric(123)),
-            PactType::StringLike(StringLike(b"hello world")),
+            PactType::StringLike(StringLike(b"hello world".to_vec())),
         ],
         &[
             PactType::Numeric(Numeric(321)),
-            PactType::StringLike(StringLike(b"world hello")),
+            PactType::StringLike(StringLike(b"world hello".to_vec())),
         ],
         &[
             // EQ LD_INPUT(0) LD_USER(0)
@@ -498,12 +497,12 @@ fn it_does_a_numeric_in_comparison() {
 #[test]
 fn it_does_a_string_in_comparison() {
     let input_data = [
-        PactType::StringLike(StringLike(b"Never gonna")),
-        PactType::StringLike(StringLike(b"give you up")),
+        PactType::StringLike(StringLike(b"Never gonna".to_vec())),
+        PactType::StringLike(StringLike(b"give you up".to_vec())),
     ];
     let user_data = [PactType::List(vec![
-        PactType::StringLike(StringLike(b"Never gonna")),
-        PactType::StringLike(StringLike(b"let you down")),
+        PactType::StringLike(StringLike(b"Never gonna".to_vec())),
+        PactType::StringLike(StringLike(b"let you down".to_vec())),
     ])];
 
     let result = interpreter::interpret(
@@ -550,7 +549,7 @@ fn it_fails_with_lhs_list_for_in_comparison() {
 fn it_does_an_in_comparison_with_a_mixed_list() {
     let input_data = [PactType::Numeric(Numeric(1931))];
     let user_data = [PactType::List(vec![
-        PactType::StringLike(StringLike(b"It's alive! It's alive!")),
+        PactType::StringLike(StringLike(b"It's alive! It's alive!".to_vec())),
         PactType::Numeric(Numeric(1931)),
     ])];
 
