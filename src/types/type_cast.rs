@@ -1,7 +1,7 @@
 // Copyright 2019 Centrality Investments Limited
 // This file is part of Pact.
 //
-// Licensed under the LGPL, Version 3.0 (the "License");
+// Licensed under the Apache License v2.0;
 // you may not use this file except in compliance with the License.
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -9,10 +9,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the Apache License v2.0
 // along with Pact. If not, see:
-//   <https://centrality.ai/licenses/gplv3.txt>
-//   <https://centrality.ai/licenses/lgplv3.txt>
+//   <https://futureverse.com/licenses/apachev2.txt>
 
 //!
 //! Type conversion traits and impls for `PactType`s
