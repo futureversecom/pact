@@ -34,6 +34,7 @@ describe("wasm pact", () => {
         expect(pactContract.encode()).toEqual(expected_payload);
     });
 
+    // refer to ../../src/types/contract.rs "contract_encode_2" test for rust side output
     test("pact contract encode same as rust output 2", () => {
         let expected_payload = new Uint8Array([
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 0, 48, 104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 0, 0, 0, 17
@@ -50,6 +51,7 @@ describe("wasm pact", () => {
         expect(pactContract.encode()).toEqual(expected_payload);
     });
 
+    // refer to ../../src/types/contract.rs "contract_encode_3" test for rust side output
     test("pact contract encode same as rust output 3", () => {
         let expected_payload = new Uint8Array([
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 0, 48, 104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 16, 0, 8, 17
@@ -66,6 +68,7 @@ describe("wasm pact", () => {
         expect(pactContract.encode()).toEqual(expected_payload);
     });
 
+    // refer to ../../src/types/contract.rs "contract_encode_4" test for rust side output
     test("pact contract encode same as rust output 4", () => {
         let expected_payload = new Uint8Array([
             0, 64, 128, 16, 80, 0, 0, 0, 0, 0, 0, 0, 128, 16, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32
